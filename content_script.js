@@ -57,6 +57,4 @@ const changeAlbumsOnPage = (foundAlbumsOnPage) => {
 	});
 };
 
-const getMyAlbums = () => [];
-
 rymExtension();
