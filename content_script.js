@@ -33,8 +33,11 @@ const trimMyAlbums = (file) => {
 
 const getPageAlbums = () => {
 	const albums = document.getElementsByClassName("album");
+	const listAlbums = document.getElementsByClassName("list_album");
 	const albumIds = Array.prototype.map.call(albums, (a) => a.title);
-	return albumIds;
+	const listAlbumIds = Array.prototype.map.call(listAlbums, (a) => a.title);
+	const allIds = albumIds.concat(listAlbumIds);
+	return allIds;
 };
 
 const getTrimmedPageAlbums = (file) => {
@@ -51,14 +54,15 @@ const findAlbumsOnPage = (trimmedPageAlbums, trimmedMyAlbums) => {
 const changeAlbumsOnPage = (foundAlbumsOnPage, trimmedMyAlbums) => {
 	foundAlbumsOnPage.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
-		elements.forEach(
-			(element) =>
-				(element.innerHTML += `<span style="font-weight: bold"> ${
+		elements.forEach((element) => {
+			if (!element.innerHTML.includes("span style")) {
+				element.innerHTML += `<span style="font-weight: bold"> ${
 					trimmedMyAlbums
 						.filter((t) => t.id === f)
 						.map((t) => t.rating)[0]
-				}</span>`)
-		);
+				}</span>`;
+			}
+		});
 	});
 };
 
