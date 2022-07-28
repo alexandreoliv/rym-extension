@@ -7,7 +7,6 @@ const rymExtension = () => {
 		window.addEventListener("load", (event) => {
 			console.log("[Web Modifier] Executing Listener");
 
-			// let myAlbums = require("./user_albums_export.json");
 			const myAlbums = getMyAlbums();
 			const trimmedMyAlbums = trimMyAlbums(myAlbums);
 			const pageAlbums = getPageAlbums();
@@ -16,7 +15,7 @@ const rymExtension = () => {
 				trimmedPageAlbums,
 				trimmedMyAlbums
 			);
-			changeAlbumsOnPage(foundAlbumsOnPage);
+			changeAlbumsOnPage(foundAlbumsOnPage, trimmedMyAlbums);
 		});
 	}
 };
@@ -49,11 +48,17 @@ const findAlbumsOnPage = (trimmedPageAlbums, trimmedMyAlbums) => {
 	);
 };
 
-const changeAlbumsOnPage = (foundAlbumsOnPage) => {
+const changeAlbumsOnPage = (foundAlbumsOnPage, trimmedMyAlbums) => {
 	foundAlbumsOnPage.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
-		// Array.prototype.map.call(elements, e => e.innerText)
-		elements.forEach((element) => (element.innerText = "FOUND"));
+		elements.forEach(
+			(element) =>
+				(element.innerHTML += `<span style="font-weight: bold"> ${
+					trimmedMyAlbums
+						.filter((t) => t.id === f)
+						.map((t) => t.rating)[0]
+				}</span>`)
+		);
 	});
 };
 
