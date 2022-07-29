@@ -93,7 +93,7 @@ const changeAlbumsOnPage = (
 		elements.forEach((element) => {
 			// prevents writing it twice
 			if (!element.innerHTML.includes("span style")) {
-				element.innerHTML += `<span style="font-weight: bold"> ${
+				element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 					trimmedMyAlbums
 						.filter((t) => t.id === f)
 						.map((t) => t.rating)[0]
@@ -112,7 +112,7 @@ const changeAlbumsOnPage = (
 			"trimmedMyAlbums.filter((t) => t.album === f)",
 			trimmedMyAlbums.filter((t) => t.album === f)
 		);
-		element.innerHTML += `<span style="font-weight: bold"> ${
+		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 			trimmedMyAlbums.filter((t) => t.album === f).map((t) => t.rating)[0]
 		}</span>`;
 	});
