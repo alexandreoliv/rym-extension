@@ -11,7 +11,7 @@ const rymExtension = () => {
 			const trimmedMyAlbums = trimMyAlbums(myAlbums);
 			const pageAlbumIds = getPageAlbumIds();
 			const trimmedPageAlbumIds = getTrimmedPageAlbumIds(pageAlbumIds);
-			const { pageAlbumTitles, pageBandNames } = getPageAlbumTitles();
+			const { pageAlbumTitles, pageArtistNames } = getPageAlbumTitles();
 
 			const foundAlbumsOnPageById = findAlbumsOnPageById(
 				trimmedPageAlbumIds,
@@ -20,7 +20,7 @@ const rymExtension = () => {
 
 			const foundAlbumsOnPageByTitle = findAlbumsOnPageByTitle(
 				pageAlbumTitles,
-				pageBandNames,
+				pageArtistNames,
 				trimmedMyAlbums
 			);
 
@@ -28,7 +28,7 @@ const rymExtension = () => {
 				foundAlbumsOnPageById,
 				foundAlbumsOnPageByTitle,
 				trimmedMyAlbums,
-				pageBandNames
+				pageArtistNames
 			);
 		});
 	}
@@ -67,9 +67,12 @@ const getPageAlbumTitles = () => {
 		albums,
 		(a) => a.innerText
 	);
-	const bands = document.getElementsByClassName("artist");
-	const pageBandNames = Array.prototype.map.call(bands, (a) => a.innerText);
-	return { pageAlbumTitles, pageBandNames };
+	const artists = document.getElementsByClassName("artist");
+	const pageArtistNames = Array.prototype.map.call(
+		artists,
+		(a) => a.innerText
+	);
+	return { pageAlbumTitles, pageArtistNames };
 };
 
 const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
@@ -81,10 +84,10 @@ const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
 
 const findAlbumsOnPageByTitle = (
 	pageAlbumTitles,
-	pageBandNames,
+	pageArtistNames,
 	trimmedMyAlbums
 ) => {
-	pageAlbumTitles, pageBandNames, trimmedMyAlbums;
+	pageAlbumTitles, pageArtistNames, trimmedMyAlbums;
 
 	return pageAlbumTitles.filter(
 		(p) =>
@@ -97,7 +100,7 @@ const changeAlbumsOnPage = (
 	foundAlbumsOnPageById,
 	foundAlbumsOnPageByTitle,
 	trimmedMyAlbums,
-	pageBandNames
+	pageArtistNames
 ) => {
 	foundAlbumsOnPageById.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
@@ -113,7 +116,7 @@ const changeAlbumsOnPage = (
 		});
 	});
 
-	// the second .filter compares with pageBandNames to assign the correct rating in case of band homonyms
+	// the second .filter compares with pageArtistNames to assign the correct rating in case of artist homonyms
 	foundAlbumsOnPageByTitle.map((f) => {
 		const element = Array.from(
 			document.getElementsByClassName("release")
@@ -124,7 +127,7 @@ const changeAlbumsOnPage = (
 				.filter(
 					(t) =>
 						t.artist ===
-						pageBandNames.filter((b) => b === t.artist)[0]
+						pageArtistNames.filter((b) => b === t.artist)[0]
 				)
 				.map((t) => t.rating)[0]
 		}</span>`;
