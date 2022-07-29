@@ -13,20 +13,20 @@ const rymExtension = () => {
 			const trimmedPageAlbumIds = getTrimmedPageAlbumIds(pageAlbumIds);
 			const { pageAlbumTitles, pageArtistNames } = getPageAlbumTitles();
 
-			const foundAlbumsOnPageById = findAlbumsOnPageById(
+			const ratedAlbumsOnPageById = findRatedAlbumsOnPageById(
 				trimmedPageAlbumIds,
 				trimmedMyAlbums
 			);
 
-			const foundAlbumsOnPageByTitle = findAlbumsOnPageByTitle(
+			const ratedAlbumsOnPageByTitle = findRatedAlbumsOnPageByTitle(
 				pageAlbumTitles,
 				pageArtistNames,
 				trimmedMyAlbums
 			);
 
 			changeAlbumsOnPage(
-				foundAlbumsOnPageById,
-				foundAlbumsOnPageByTitle,
+				ratedAlbumsOnPageById,
+				ratedAlbumsOnPageByTitle,
 				trimmedMyAlbums,
 				pageArtistNames
 			);
@@ -75,14 +75,14 @@ const getPageAlbumTitles = () => {
 	return { pageAlbumTitles, pageArtistNames };
 };
 
-const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
+const findRatedAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
 	return trimmedPageAlbums.filter(
 		(p) =>
 			p === trimmedMyAlbums.filter((m) => m.id === p).map((m) => m.id)[0]
 	);
 };
 
-const findAlbumsOnPageByTitle = (
+const findRatedAlbumsOnPageByTitle = (
 	pageAlbumTitles,
 	pageArtistNames,
 	trimmedMyAlbums
@@ -97,15 +97,15 @@ const findAlbumsOnPageByTitle = (
 };
 
 const changeAlbumsOnPage = (
-	foundAlbumsOnPageById,
-	foundAlbumsOnPageByTitle,
+	ratedAlbumsOnPageById,
+	ratedAlbumsOnPageByTitle,
 	trimmedMyAlbums,
 	pageArtistNames
 ) => {
-	foundAlbumsOnPageById.map((f) => {
+	ratedAlbumsOnPageById.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
 		elements.forEach((element) => {
-			// prevents writing the rating multiple times on the same element (if the album has been cited more than once on the page)
+			// prevents writing the rating multiple times on the same element if the album has been cited more than once on the page
 			if (!element.innerHTML.includes("span style")) {
 				element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 					trimmedMyAlbums
@@ -116,8 +116,8 @@ const changeAlbumsOnPage = (
 		});
 	});
 
-	// the second .filter compares with pageArtistNames to assign the correct rating in case of artist homonyms
-	foundAlbumsOnPageByTitle.map((f) => {
+	// the second .filter compares with pageArtistNames to assign the correct rating in case of homonym artists
+	ratedAlbumsOnPageByTitle.map((f) => {
 		const element = Array.from(
 			document.getElementsByClassName("release")
 		).filter((a) => a.innerText === `${f}`)[0];
