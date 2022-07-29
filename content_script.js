@@ -11,7 +11,7 @@ const rymExtension = () => {
 			const trimmedMyAlbums = trimMyAlbums(myAlbums);
 			const pageAlbumIds = getPageAlbumIds();
 			const trimmedPageAlbumIds = getTrimmedPageAlbumIds(pageAlbumIds);
-			const pageAlbumTitles = getPageAlbumTitles();
+			const { pageAlbumTitles, pageBandNames } = getPageAlbumTitles();
 
 			const foundAlbumsOnPageById = findAlbumsOnPageById(
 				trimmedPageAlbumIds,
@@ -20,13 +20,15 @@ const rymExtension = () => {
 
 			const foundAlbumsOnPageByTitle = findAlbumsOnPageByTitle(
 				pageAlbumTitles,
+				pageBandNames,
 				trimmedMyAlbums
 			);
 
 			changeAlbumsOnPage(
 				foundAlbumsOnPageById,
 				foundAlbumsOnPageByTitle,
-				trimmedMyAlbums
+				trimmedMyAlbums,
+				pageBandNames
 			);
 		});
 	}
@@ -35,7 +37,9 @@ const rymExtension = () => {
 const trimMyAlbums = (myAlbums) => {
 	return myAlbums.map((e) => ({
 		id: e["RYM Album"],
-		artist: e["First Name"] + " " + e["Last Name"],
+		artist: e["First Name"]
+			? e["First Name"] + " " + e["Last Name"]
+			: e["Last Name"],
 		artistLocalized:
 			e["First Name localized"] + " " + e["Last Name localized"],
 		album: e["Title"],
@@ -57,10 +61,15 @@ const getTrimmedPageAlbumIds = (pageAlbumIds) => {
 };
 
 const getPageAlbumTitles = () => {
-	// TODO there might be homonyms
+	// there might be homonyms; to be handled on changeAlbumsOnPage
 	const albums = document.getElementsByClassName("release");
-	const albumTitles = Array.prototype.map.call(albums, (a) => a.innerText);
-	return albumTitles;
+	const pageAlbumTitles = Array.prototype.map.call(
+		albums,
+		(a) => a.innerText
+	);
+	const bands = document.getElementsByClassName("artist");
+	const pageBandNames = Array.prototype.map.call(bands, (a) => a.innerText);
+	return { pageAlbumTitles, pageBandNames };
 };
 
 const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
@@ -70,8 +79,14 @@ const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
 	);
 };
 
-const findAlbumsOnPageByTitle = (trimmedPageAlbums, trimmedMyAlbums) => {
-	return trimmedPageAlbums.filter(
+const findAlbumsOnPageByTitle = (
+	pageAlbumTitles,
+	pageBandNames,
+	trimmedMyAlbums
+) => {
+	pageAlbumTitles, pageBandNames, trimmedMyAlbums;
+
+	return pageAlbumTitles.filter(
 		(p) =>
 			p ===
 			trimmedMyAlbums.filter((m) => m.album === p).map((m) => m.album)[0]
@@ -81,7 +96,8 @@ const findAlbumsOnPageByTitle = (trimmedPageAlbums, trimmedMyAlbums) => {
 const changeAlbumsOnPage = (
 	foundAlbumsOnPageById,
 	foundAlbumsOnPageByTitle,
-	trimmedMyAlbums
+	trimmedMyAlbums,
+	pageBandNames
 ) => {
 	foundAlbumsOnPageById.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
@@ -97,14 +113,20 @@ const changeAlbumsOnPage = (
 		});
 	});
 
-	console.log("foundAlbumsOnPageByTitle", foundAlbumsOnPageByTitle);
+	// the second .filter compares with pageBandNames to assign the correct rating in case of band homonyms
 	foundAlbumsOnPageByTitle.map((f) => {
 		const element = Array.from(
 			document.getElementsByClassName("release")
 		).filter((a) => a.innerText === `${f}`)[0];
-		console.log("element", element);
 		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
-			trimmedMyAlbums.filter((t) => t.album === f).map((t) => t.rating)[0]
+			trimmedMyAlbums
+				.filter((t) => t.album === f)
+				.filter(
+					(t) =>
+						t.artist ===
+						pageBandNames.filter((b) => b === t.artist)[0]
+				)
+				.map((t) => t.rating)[0]
 		}</span>`;
 	});
 };
