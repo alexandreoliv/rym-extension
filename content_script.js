@@ -58,7 +58,7 @@ const getTrimmedPageAlbumIds = (pageAlbumIds) => {
 
 const getPageAlbumTitles = () => {
 	// TODO there might be homonyms
-	const albums = document.getElementsByClassName("ui_name_locale_original");
+	const albums = document.getElementsByClassName("release");
 	const albumTitles = Array.prototype.map.call(albums, (a) => a.innerText);
 	return albumTitles;
 };
@@ -86,7 +86,7 @@ const changeAlbumsOnPage = (
 	foundAlbumsOnPageById.map((f) => {
 		const elements = document.querySelectorAll(`[title="[Album${f}]"]`);
 		elements.forEach((element) => {
-			// prevents writing it twice
+			// prevents writing the rating multiple times on the same element (if the album has been cited more than once on the page)
 			if (!element.innerHTML.includes("span style")) {
 				element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 					trimmedMyAlbums
@@ -97,10 +97,12 @@ const changeAlbumsOnPage = (
 		});
 	});
 
+	console.log("foundAlbumsOnPageByTitle", foundAlbumsOnPageByTitle);
 	foundAlbumsOnPageByTitle.map((f) => {
-		const element = Array.from(document.querySelectorAll("a")).filter(
-			(a) => a.innerText === `${f}`
-		)[0];
+		const element = Array.from(
+			document.getElementsByClassName("release")
+		).filter((a) => a.innerText === `${f}`)[0];
+		console.log("element", element);
 		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 			trimmedMyAlbums.filter((t) => t.album === f).map((t) => t.rating)[0]
 		}</span>`;
