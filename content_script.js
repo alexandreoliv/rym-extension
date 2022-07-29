@@ -23,8 +23,6 @@ const rymExtension = () => {
 				trimmedMyAlbums
 			);
 
-			console.log("foundAlbumsOnPageByTitle", foundAlbumsOnPageByTitle);
-
 			changeAlbumsOnPage(
 				foundAlbumsOnPageById,
 				foundAlbumsOnPageByTitle,
@@ -62,10 +60,7 @@ const getPageAlbumTitles = () => {
 	// TODO there might be homonyms
 	const albums = document.getElementsByClassName("ui_name_locale_original");
 	const albumTitles = Array.prototype.map.call(albums, (a) => a.innerText);
-	const release = document.getElementsByClassName("release");
-	const releaseTitles = Array.prototype.map.call(release, (a) => a.innerText);
-	const allTitles = albumTitles.concat(releaseTitles);
-	return allTitles;
+	return albumTitles;
 };
 
 const findAlbumsOnPageById = (trimmedPageAlbums, trimmedMyAlbums) => {
@@ -102,16 +97,10 @@ const changeAlbumsOnPage = (
 		});
 	});
 
-	console.log("foundAlbumsOnPageByTitle", foundAlbumsOnPageByTitle);
 	foundAlbumsOnPageByTitle.map((f) => {
 		const element = Array.from(document.querySelectorAll("a")).filter(
 			(a) => a.innerText === `${f}`
 		)[0];
-		console.log("element", element);
-		console.log(
-			"trimmedMyAlbums.filter((t) => t.album === f)",
-			trimmedMyAlbums.filter((t) => t.album === f)
-		);
 		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
 			trimmedMyAlbums.filter((t) => t.album === f).map((t) => t.rating)[0]
 		}</span>`;
