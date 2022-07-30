@@ -7,7 +7,13 @@
 			"all_frames": true
 		}
 	],
-	"permissions": ["storage"],
+	"permissions": ["storage", "input"],
+	"web_accessible_resources": [
+		{
+			"resources": ["rymExtension.js"],
+			"matches": ["https://*.rateyourmusic.com/*"]
+		}
+	],
 	"description": "This extension can modify webpages",
 	"manifest_version": 3,
 	"name": "RYM extension",
