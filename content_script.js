@@ -1,13 +1,7 @@
 const rymExtension = () => {
-	console.log("[Web Modifier] Lighbox Blocker content script injected");
-	console.log(document.location.href);
-
-	if (document.location.href.indexOf("https://rateyourmusic.com") === 0) {
-		console.log("[Web Modifier] Found RateYourMusic. Injecting Listener");
-		window.addEventListener("load", (event) => {
-			console.log("[Web Modifier] Executing Listener");
-
-			const myAlbums = getMyAlbums();
+	if (document.location.href.includes("https://rateyourmusic.com")) {
+		window.addEventListener("load", async () => {
+			const myAlbums = await getMyAlbums(yourID);
 			const trimmedMyAlbums = trimMyAlbums(myAlbums);
 			const pageAlbumIds = getPageAlbumIds();
 			const trimmedPageAlbumIds = getTrimmedPageAlbumIds(pageAlbumIds);
@@ -34,9 +28,67 @@ const rymExtension = () => {
 	}
 };
 
+const getMyAlbums = async (id) => {
+	const myAlbumsOnCSV = await getMyAlbumsOnCSV(id);
+	const myAlbumsOnJSON = convertCSVtoJSON(myAlbumsOnCSV);
+	return myAlbumsOnJSON;
+};
+
+const getMyAlbumsOnCSV = async (id) => {
+	const response = await fetch(
+		`https://rateyourmusic.com/user_albums_export?album_list_id=${id}&noreview`,
+		{
+			method: "get",
+			headers: {
+				"content-type": "text/csv;charset=UTF-8",
+			},
+		}
+	);
+
+	if (response.status === 200) {
+		return response.text();
+	} else {
+		console.log(`Error code ${response.status}`);
+	}
+};
+
+const convertCSVtoJSON = (csv) => {
+	const array = csv.toString().split("\n");
+	const csvToJsonResult = [];
+
+	/* removes spaces after commas which happens in some of the headers */
+	array[0] = array[0].replace(/\s*,\s*/g, ",");
+
+	const headers = array[0].split(",");
+
+	for (let i = 1; i < array.length - 1; i++) {
+		const jsonObject = {};
+		const currentArrayString = array[i];
+		let string = "";
+
+		let quoteFlag = 0;
+		for (let character of currentArrayString) {
+			if (character === '"' && quoteFlag === 0) {
+				quoteFlag = 1;
+			} else if (character === '"' && quoteFlag == 1) quoteFlag = 0;
+			if (character === "," && quoteFlag === 0) character = "|";
+			if (character !== '"') string += character;
+		}
+
+		let jsonProperties = string.split("|");
+
+		for (let j in headers) {
+			jsonObject[headers[j]] = jsonProperties[j];
+		}
+		csvToJsonResult.push(jsonObject);
+	}
+
+	return csvToJsonResult;
+};
+
 const trimMyAlbums = (myAlbums) => {
 	return myAlbums.map((e) => ({
-		id: e["RYM Album"],
+		id: Number(e["RYM Album"]),
 		artist: e["First Name"]
 			? e["First Name"] + " " + e["Last Name"]
 			: e["Last Name"],
