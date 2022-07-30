@@ -7,6 +7,7 @@
 			"all_frames": true
 		}
 	],
+	"permissions": ["storage"],
 	"description": "This extension can modify webpages",
 	"manifest_version": 3,
 	"name": "RYM extension",

@@ -1,5 +1,6 @@
 const rymExtension = () => {
 	if (document.location.href.includes("https://rateyourmusic.com")) {
+		console.log("inside rymExtension");
 		window.addEventListener("load", async () => {
 			const myAlbums = await getMyAlbums(yourID);
 			const trimmedMyAlbums = trimMyAlbums(myAlbums);
@@ -29,12 +30,37 @@ const rymExtension = () => {
 };
 
 const getMyAlbums = async (id) => {
+	console.log("inside getMyAlbums");
+	const savedAlbums = await getSavedAlbums();
+	console.log("inside getMyAlbums again -> savedAlbums", savedAlbums);
+	const oneDayAgo = Date.now() - 86400000;
+	if (savedAlbums?.date >= oneDayAgo) return savedAlbums.albums;
+
 	const myAlbumsOnCSV = await getMyAlbumsOnCSV(id);
 	const myAlbumsOnJSON = convertCSVtoJSON(myAlbumsOnCSV);
+	saveMyAlbumsOnLocalStorage(myAlbumsOnJSON);
 	return myAlbumsOnJSON;
 };
 
+const getSavedAlbums = async () => {
+	console.log("inside getSavedAlbums");
+	const myAlbums = localStorage.getItem("myAlbums");
+	if (!myAlbums) return false;
+	console.log("inside getSavedAlbums -> myAlbums", myAlbums);
+	return JSON.parse(myAlbums);
+};
+
+const saveMyAlbumsOnLocalStorage = (myAlbums) => {
+	console.log("inside saveMyAlbumsOnLocalStorage");
+	const data = {
+		date: Date.now(),
+		albums: myAlbums,
+	};
+	localStorage.setItem("myAlbums", JSON.stringify(data));
+};
+
 const getMyAlbumsOnCSV = async (id) => {
+	console.log("inside getMyAlbumsOnCSV");
 	const response = await fetch(
 		`https://rateyourmusic.com/user_albums_export?album_list_id=${id}&noreview`,
 		{
@@ -53,6 +79,7 @@ const getMyAlbumsOnCSV = async (id) => {
 };
 
 const convertCSVtoJSON = (csv) => {
+	console.log("inside convertCSVtoJSON");
 	const array = csv.toString().split("\n");
 	const csvToJsonResult = [];
 
