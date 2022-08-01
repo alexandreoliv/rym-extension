@@ -14,9 +14,9 @@
 
 ## About the project
 
-Chrome extension for RATE YOUR MUSIC (rateyourmusic.com), a fantastic online music database. Being a heavy user — and a huge fan — of RYM since 2010, I realised that one extra functionality would be tremendously helpful: the possibility of seeing your rating (to any album), on any RYM page where that album was linked, for instance: charts, lists, comment boxes, artists or record label profiles, genre pages, or profile pages from any RYM user (including yours).
+Chrome extension for RATE YOUR MUSIC (rateyourmusic.com), a fantastic online music database. Being a heavy user — and a huge fan — of RYM since 2010, I realised that one extra feature would be tremendously helpful: the possibility of seeing your rating (to any album), on any RYM page where that album was linked, for instance: charts, lists, comment boxes, artists or record label profiles, genre pages, or profile pages from any RYM user (including yours).
 
-With this extra functionally, there's no more need to open dozens (sometimes hundreds) of new tabs for each album you find on a list just to check whether you've listened to that album already, or which rating you gave to it.
+With this extra feature, there's no more need to open dozens (sometimes hundreds) of new tabs for each album you find on a list just to check whether you've listened to that album already, or which rating you gave to it.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
