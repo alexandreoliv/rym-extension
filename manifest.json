@@ -17,6 +17,6 @@
 	"description": "This extension can modify webpages",
 	"manifest_version": 3,
 	"name": "RYM extension",
-	"version": "1.0",
+	"version": "0.1",
 	"author": "Alexandre Oliveira"
 }
