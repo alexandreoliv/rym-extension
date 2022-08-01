@@ -31,9 +31,9 @@ const rymExtension = () => {
 };
 
 const getMyAlbums = async () => {
-	const savedAlbums = await getSavedAlbums();
+	// const savedAlbums = await getSavedAlbums();
 	const oneDayAgo = Date.now() - 86400000;
-	if (savedAlbums?.date >= oneDayAgo) return savedAlbums.albums;
+	// if (savedAlbums?.date >= oneDayAgo) return savedAlbums.albums;
 
 	const myAlbumsOnCSV = await getMyAlbumsOnCSV();
 	const myAlbumsOnJSON = convertCSVtoJSON(myAlbumsOnCSV);
@@ -97,7 +97,7 @@ const convertCSVtoJSON = (csv) => {
 			if (character !== '"') string += character;
 		}
 
-		let jsonProperties = string.split("|");
+		const jsonProperties = string.split("|");
 
 		for (let j in headers) {
 			jsonObject[headers[j]] = jsonProperties[j];
@@ -112,12 +112,14 @@ const trimMyAlbums = (myAlbums) => {
 	return myAlbums.map((e) => ({
 		id: Number(e["RYM Album"]),
 		artist: e["First Name"]
-			? e["First Name"] + " " + e["Last Name"]
-			: e["Last Name"],
+			? e["First Name"].replace(/&amp;/g, "&").replace(/&#34;/g, '"') +
+			  " " +
+			  e["Last Name"].replace(/&amp;/g, "&").replace(/&#34;/g, '"')
+			: e["Last Name"].replace(/&amp;/g, "&").replace(/&#34;/g, '"'),
 		artistLocalized:
 			e["First Name localized"] + " " + e["Last Name localized"],
-		album: e["Title"],
-		rating: e["Rating"] / 2,
+		album: e["Title"].replace(/&amp;/g, "&").replace(/&#34;/g, '"'),
+		rating: e["Rating"] === "0" ? "" : e["Rating"] / 2,
 	}));
 };
 
