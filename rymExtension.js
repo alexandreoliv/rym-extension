@@ -197,21 +197,27 @@ const changeAlbumsOnPage = (
 		});
 	});
 
-	// the second .filter compares with pageArtistNames to assign the correct rating in case of homonym artists
 	ratedAlbumsOnPageByTitle.map((f) => {
 		const element = Array.from(
 			document.getElementsByClassName("release")
 		).filter((a) => a.innerText === `${f}`)[0];
-		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${
-			trimmedMyAlbums
-				.filter((t) => t.album === f)
-				.filter(
-					(t) =>
-						t.artist ===
-						pageArtistNames.filter((b) => b === t.artist)[0]
-				)
-				.map((t) => t.rating)[0]
-		}</span>`;
+
+		let album = trimmedMyAlbums.filter((t) => t.album === f);
+
+		// if multiple albums with this name have been found, compares with pageArtistNames to assign the correct rating
+		if (album.length > 1)
+			album = album.filter((t) =>
+				// artists with Arabic names have their names in inverted order
+				t.artistLocalized
+					? pageArtistNames.filter((b) =>
+							t.artistLocalized.includes(b.split(" ")[0])
+					  )[0]
+					: pageArtistNames.filter((b) =>
+							t.artist.includes(b.split(" ")[0])
+					  )[0]
+			);
+
+		element.innerHTML += `<span style="font-weight: bold; color: #794e15"> ${album[0].rating}</span>`;
 	});
 };
 
