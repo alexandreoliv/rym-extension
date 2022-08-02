@@ -10,6 +10,8 @@
   <h3 align="center">RYM EXTENSION</h3>
 </div>
 
+[![Product Name Screen Shot][product-screenshot]](https://github.com/alexandreoliv/rym-extension/)
+
 <!-- ABOUT THE PROJECT -->
 
 ## About the project
@@ -42,9 +44,10 @@ With this extra feature, there's no more need to open dozens (sometimes hundreds
 
 Questions, suggestions and any feedback are appreciated! If you want to support this extension, you can also buy me a coffee:
 
-[<center>!["Buy Me A Coffee"</center>](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://buymeacoffee.com/alexandrebo)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://buymeacoffee.com/alexandrebo)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/alexandre-oliv/
+[product-screenshot]: images/screenshot.png
